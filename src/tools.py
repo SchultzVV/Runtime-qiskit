@@ -44,6 +44,22 @@ def bpf(theta, phi, p):
     state[3] = 1j*np.sqrt(p)*np.cos(theta/2)
     return state
 
+def bpf_ref(p):
+    state = np.zeros(4,dtype=complex)
+    state[0] = np.sqrt((1-p)/2)
+    state[1] = 1j*np.sqrt(p/2)
+    state[2] = np.sqrt((1-p)/2)
+    state[3] = np.sqrt(p/2)
+    return state
+
+def init_state_ref(n_qb, p):
+    d = 2**n_qb
+    target_vector = bpf_ref(p)
+    target_op = np.outer(target_vector.conj(), target_vector)
+    target_op = torch.tensor(target_op)
+    return target_vector, target_op
+
+
 def init_state_bpf(n_qb, p):
     d = 2**n_qb
     target_vector = bpf(np.pi/2, 0, p)
