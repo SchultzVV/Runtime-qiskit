@@ -1,8 +1,6 @@
 #from sympy import conjugate
 from torch.autograd import Variable
 import torch
-from qiskit import *
-import qiskit
 from rsvg import rsvg
 from rdmg import rdm_ginibre
 import pennylane as qml
@@ -21,7 +19,6 @@ import cmath
 #        self.base_vitima, self.base_autor = split_dataset_by_city(
 #            self.base, 'S.PAULO')
 #        self.mapa_cluster = populate_maps(self.base_vitima, self.base_autor)
-
 def general_state(theta, phi):
     state = np.zeros(2,dtype=complex)
     state[0] = np.cos(theta/2)
@@ -143,7 +140,7 @@ def train(epocas, circuit, params, target_op):
             best_loss = 1*loss
             best_params = 1*params
         f.append(fidelidade(circuit, best_params, target_op))
-    #print(epoch, loss.item())
+    print(epoch, loss.item())
     return best_params, f
 
 def train2(epocas, circuit, params, target_op):
@@ -388,64 +385,6 @@ def vqa_gen_state(n_qubits, depht=None):
         return qml.expval(qml.Hermitian(M, wires=0))
     return circuit, params
 
-def general_vqacircuit_penny(n_qubits, depht=None):
-    #n_qubits = 1
-    if depht == None:
-        depht = n_qubits+1
-    n = 3*n_qubits*(1+depht)
-    params = random_params(n)
-    #params = [i for i in range(0,n)]
-    #print(len(params))
-    device = get_device(n_qubits)
-    @qml.qnode(device, interface="torch")
-    def circuit(params, M=None):
-        w = [i for i in range(n_qubits)]
-        aux = 0
-        if n_qubits == 1:
-            for j in range(depht+1):
-                qml.RX(params[aux], wires=0)
-                aux += 1
-                qml.RY(params[aux], wires=0)
-                aux += 1
-                qml.RZ(params[aux], wires=0)
-                aux += 1
-            return qml.expval(qml.Hermitian(M, wires=w))
-        for j in range(depht+1):
-            for i in range(n_qubits):
-                qml.RX(params[aux], wires=i)
-                aux += 1
-                qml.RY(params[aux], wires=i)
-                aux += 1
-                qml.RZ(params[aux], wires=i)
-                aux += 1
-            if j < depht:
-                for i in range(n_qubits-1):
-                    qml.CNOT(wires=[i,i+1])
-        return qml.expval(qml.Hermitian(M, wires=w))
-    return circuit, params
-
-def general_vqacircuit_qiskit(n_qubits, params):
-    #n = 3*n_qubits*(1+depht) # n=len(params)
-    depht = int(len(params)/(3*n_qubits)-1)
-    qr = QuantumRegister(n_qubits); qc = qiskit.QuantumCircuit(qr)
-    aux = 0
-    for j in range(depht+1):
-        for i in range(n_qubits):
-            qc.rx(params[aux],i)
-            aux += 1
-            qc.ry(params[aux],i)
-            aux += 1
-            qc.rz(params[aux],i)
-            aux += 1
-        if j < depht:
-            for i in range(n_qubits-1):
-                qc.cnot(i,i+1)
-    return qc, qr
-
-n_qubits = 2
-params = [i for i in range(0,24)]
-qc, qr = general_vqacircuit_qiskit(n_qubits,params)
-qc.draw(output='mpl', style={'backgroundcolor': '#EEEEEE'})
 #n_qubits = 4
 #fidelidades = []
 #
