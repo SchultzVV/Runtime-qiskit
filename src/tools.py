@@ -47,9 +47,9 @@ def bpf(theta, phi, p):
 def bpf_ref(p):
     state = np.zeros(4,dtype=complex)
     state[0] = np.sqrt((1-p)/2)
-    state[1] = 1j*np.sqrt(p/2)
+    state[1] = (-1)*1j*np.sqrt(p/2)
     state[2] = np.sqrt((1-p)/2)
-    state[3] = np.sqrt(p/2)
+    state[3] = 1j*np.sqrt(p/2)
     return state
 
 def init_state_ref(n_qb, p):
