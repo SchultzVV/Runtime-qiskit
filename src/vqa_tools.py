@@ -43,7 +43,7 @@ def train(epocas, circuit, params, target_op):
     opt = torch.optim.Adam([params], lr=0.1)
     best_loss = 1*cost(circuit, params, target_op)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(device)
+    #print(device)
     best_params = 1*params
     f=[]
     for epoch in range(epocas):
@@ -56,7 +56,7 @@ def train(epocas, circuit, params, target_op):
             best_loss = 1*loss
             best_params = 1*params
         f.append(fidelidade(circuit, best_params, target_op))
-    print(epoch, loss.item())
+    #print(epoch, loss.item())
     return best_params, f
 
 
@@ -68,7 +68,7 @@ def train(epocas, circuit, params, target_op):
     for epoch in range(epocas):
         opt.zero_grad()
         loss = cost(circuit, params, target_op)
-        print(epoch, loss.item())
+        #print(epoch, loss.item())
         loss.backward()
         opt.step()
         if loss < best_loss:
@@ -245,28 +245,6 @@ def vqa_extra_cnot_depth5(n_qubits):
             aux+=2
         qml.CNOT(wires=[1,0])
         qml.CNOT(wires=[2,3])
-        #for j in range(n_qubits):
-        #    qml.RX(params[j+aux], wires=j)
-        #    qml.RY(params[j+1+aux], wires=j)
-        #    qml.RZ(params[j+2+aux], wires=j)
-        #    aux+=2
-        #    w.append(j)
-        #for j in range(n_qubits):
-        #    qml.RX(params[j+aux], wires=j)
-        #    qml.RY(params[j+1+aux], wires=j)
-        #    qml.RZ(params[j+2+aux], wires=j)
-        #    w.append(j)
-        #    aux+=2
-        #if n_qubits == 1:
-        #    for z in range(1,depht):
-        #        qml.RX(params[j+aux], wires=j)
-        #        qml.RY(params[j+1+aux], wires=j)
-        #        qml.RZ(params[j+2+aux], wires=j)
-        #        aux+=2
-        #    return qml.expval(qml.Hermitian(M, wires=w))
-        #for z in range(depht):
-        #    for i in range(n_qubits-1):
-        #        qml.CNOT(wires=[i,i+1])
         for j in range(n_qubits):
             qml.RX(params[j+aux], wires=j)
             qml.RY(params[j+1+aux], wires=j)

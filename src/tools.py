@@ -76,7 +76,7 @@ def init_state_rsvg(n_qb):
 def init_state_rdm_ginibre(n_qb):
     d = 2**n_qb
     rho = rdm_ginibre(d)
-    print(np.trace(np.dot(rho,rho)))
+    #print(np.trace(np.dot(rho,rho)))
     target_op = torch.tensor(rho)
     return target_op
 
@@ -116,7 +116,7 @@ def train(epocas, circuit, params, target_op):
     opt = torch.optim.Adam([params], lr=0.1)
     best_loss = 1*cost(circuit, params, target_op)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    print(device)
+    #print(device)
     best_params = 1*params
     f=[]
     for epoch in range(epocas):
@@ -129,7 +129,7 @@ def train(epocas, circuit, params, target_op):
             best_loss = 1*loss
             best_params = 1*params
         f.append(fidelidade(circuit, best_params, target_op))
-    print(epoch, loss.item())
+    #print(epoch, loss.item())
     return best_params, f
 
 
@@ -141,7 +141,7 @@ def train(epocas, circuit, params, target_op):
     for epoch in range(epocas):
         opt.zero_grad()
         loss = cost(circuit, params, target_op)
-        print(epoch, loss.item())
+        #print(epoch, loss.item())
         loss.backward()
         opt.step()
         if loss < best_loss:
