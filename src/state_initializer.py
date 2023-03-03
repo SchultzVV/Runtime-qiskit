@@ -27,8 +27,8 @@ def init_state_gen_state(n_qb, p):
 def bpf(theta, phi, p):
     state = np.zeros(4,dtype=complex)
     state[0] = np.sqrt(1-p)*np.cos(theta/2)
-    state[1] = cmath.exp(1j*phi)*np.sin(theta/2)
-    state[2] = 1j*np.sqrt(p)*(-1)*cmath.exp(1j*phi)*np.sin(theta/2)
+    state[1] = 1j*np.sqrt(p)*(-1)*cmath.exp(1j*phi)*np.sin(theta/2)
+    state[2] = np.sqrt(1-p)*cmath.exp(1j*phi)*np.sin(theta/2)
     state[3] = 1j*np.sqrt(p)*np.cos(theta/2)
     return state
 
@@ -51,6 +51,7 @@ def init_state_ref(n_qb, p):
 def init_state_bpf(n_qb, p):
     d = 2**n_qb
     target_vector = bpf(np.pi/2, 0, p)
+    #target_vector = bpf(np.pi/4, 0, p)
     target_op = np.outer(target_vector.conj(), target_vector)
     target_op = torch.tensor(target_op)
     return target_vector, target_op
