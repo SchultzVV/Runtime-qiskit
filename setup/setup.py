@@ -1,6 +1,12 @@
-import os
-cmd = 'virtualenv Qiskit-runtime'
-cmds = ['virtualenv Qiskit-runtime', 'cd Qiskit-runtime & source bin/activate']
-for cmd in cmds:
-    os.system(cmd)
-#os.system(cmd)
+cmd1 = virtualenv env
+cmd2 = cd env
+cmd3 = source bin/activate
+cmd4 = cd ..
+cmd5 = pip install -r requirements.txt
+cmd6 = pip3 install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cpu
+
+# e está pronto o amviente chamado de env 
+
+# para rodar com py
+# import os
+# os.system(cmd)
