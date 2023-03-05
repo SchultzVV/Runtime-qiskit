@@ -69,6 +69,37 @@ def train(epocas, circuit, params, target_op):
     #print(epoch, loss.item())
     return best_params, f
 
+def train_ok(epocas, circuit, params, target_op, pretrain):
+    opt = torch.optim.Adam([params], lr=0.1)
+    best_loss = 1*cost(circuit, params, target_op)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    #print(device)
+    best_params = 1*params
+    f=[]
+    if pretrain:
+        for start in range(80):
+            opt.zero_grad()
+            loss = cost(circuit, params, target_op)
+            #print(epoch, loss.item())
+            loss.backward()
+            opt.step()
+            if loss < best_loss:
+                best_loss = 1*loss
+                best_params = 1*params
+
+    for epoch in range(epocas):
+        opt.zero_grad()
+        loss = cost(circuit, params, target_op)
+        #print(epoch, loss.item())
+        loss.backward()
+        opt.step()
+        if loss < best_loss:
+            best_loss = 1*loss
+            best_params = 1*params
+        f.append(fidelidade(circuit, best_params, target_op))
+    #print(epoch, loss.item())
+    return best_params, f
+
 
 #def train(epocas, circuit, params, target_op):
 #    opt = torch.optim.Adam([params], lr=0.1)

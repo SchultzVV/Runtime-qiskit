@@ -8,7 +8,7 @@ import numpy as np
 from pTrace import pTraceR_num, pTraceL_num
 from src.coherence import coh_l1
 
-from src.vqa_tools import general_vqacircuit_qiskit, train
+from src.vqa_tools import general_vqacircuit_qiskit, train_ok
 
 def start_things(n_qubits, depht):
     n = 3*n_qubits*(1+depht)
@@ -16,9 +16,9 @@ def start_things(n_qubits, depht):
     params = Variable(tensor(params), requires_grad=True)
     return n_qubits, params, depht, n
 
-def optmize(epochs, n_qubits, circuit, params, target_op):
-
-    best_params, f = train(epochs, circuit, params, target_op)
+def optmize(epochs, n_qubits, circuit, params, target_op, pretrain):
+    best_params, f = train_ok(epochs, circuit, params, target_op, pretrain)
+    #best_params, f = train(epochs, circuit, params, target_op)
     parametros = tensor(best_params).detach().numpy()
     qc, qr = general_vqacircuit_qiskit(n_qubits, parametros)
     return qc, qr, best_params
@@ -43,6 +43,6 @@ def results(rho, coerencias_R, coerencias_L):
 
 def plots(list_p, coerencias_R, coerencias_L):
     plt.plot(list_p,coerencias_R,label='Rho_R')
-    plt.plot(list_p,coerencias_L,label='Rho_L')
+    #plt.plot(list_p,coerencias_L,label='Rho_L')
     plt.legend(loc=4)
     plt.show()
