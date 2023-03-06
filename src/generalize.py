@@ -18,9 +18,9 @@ def start_things(n_qubits, depht):
 
 def optmize(epochs, n_qubits, circuit, params, target_op, pretrain):
     best_params, f = train_ok(epochs, circuit, params, target_op, pretrain)
-    #best_params, f = train(epochs, circuit, params, target_op)
-    parametros = tensor(best_params).detach().numpy()
+    parametros = best_params.clone().detach().numpy()
     qc, qr = general_vqacircuit_qiskit(n_qubits, parametros)
+    best_params = Variable(tensor(parametros), requires_grad=True)
     return qc, qr, best_params
 
 def tomograph(qc, qr):
