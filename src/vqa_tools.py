@@ -96,7 +96,10 @@ def train_ok(epocas, circuit, params, target_op, pretrain):
         if loss < best_loss:
             best_loss = 1*loss
             best_params = 1*params
-        f.append(fidelidade(circuit, best_params, target_op))
+        z = fidelidade(circuit, best_params, target_op)
+        f.append(z)
+        print(z)
+
     #print(epoch, loss.item())
     return best_params, f
 
