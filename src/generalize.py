@@ -16,8 +16,8 @@ def start_things(n_qubits, depht):
     params = Variable(tensor(params), requires_grad=True)
     return n_qubits, params, depht, n
 
-def optmize(epochs, n_qubits, circuit, params, target_op, pretrain):
-    best_params, f = train_ok(epochs, circuit, params, target_op, pretrain)
+def optmize(epochs, n_qubits, circuit, params, target_op, pretrain, pretrain_steps):
+    best_params, f = train_ok(epochs, circuit, params, target_op, pretrain, pretrain_steps)
     parametros = best_params.clone().detach().numpy()
     qc, qr = general_vqacircuit_qiskit(n_qubits, parametros)
     best_params = Variable(tensor(parametros), requires_grad=True)
@@ -32,12 +32,12 @@ def tomograph(qc, qr):
     return rho
 
 def results(rho, coerencias_R, coerencias_L):
-    rhoA_R = pTraceR_num(2,2,rho)
-    rhoA_L = pTraceL_num(2,2,rho)
-    cA_R = coh_l1(rhoA_R)
-    cA_L = coh_l1(rhoA_L)
-    coerencias_R.append(cA_R)
-    coerencias_L.append(cA_L)
+    rho_R = pTraceR_num(2,2,rho)
+    rho_L = pTraceL_num(2,2,rho)
+    coh_R = coh_l1(rho_R)
+    coh_L = coh_l1(rho_L)
+    coerencias_R.append(coh_R)
+    coerencias_L.append(coh_L)
     
     return coerencias_L, coerencias_R
 
