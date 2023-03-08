@@ -342,12 +342,12 @@ def vqa_gen_state(n_qubits, depht=None):
         return qml.expval(qml.Hermitian(M, wires=0))
     return circuit, params
 
-def general_vqacircuit_penny(n_qubits, depht=None):
+def general_vqacircuit_penny(params, n_qubits, depht=None):
     #n_qubits = 1
     if depht == None:
         depht = n_qubits+1
     n = 3*n_qubits*(1+depht)
-    params = random_params(n)
+    #params = random_params(n)
     #params = [i for i in range(0,n)]
     #print(len(params))
     device = get_device(n_qubits)
