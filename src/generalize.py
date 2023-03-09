@@ -5,7 +5,7 @@ from torch.autograd import Variable
 import matplotlib.pyplot as plt
 import numpy as np
 
-from pTrace import pTraceR_num, pTraceL_num
+from src.pTrace import pTraceR_num, pTraceL_num
 from src.coherence import coh_l1
 
 from src.vqa_tools import general_vqacircuit_qiskit, train_ok
