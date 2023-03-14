@@ -33,4 +33,7 @@ def pTraceR_num(dl, dr, rhoLR):
             rhoL[k,j] = np.conj(rhoL[j,k])
     return rhoL
 
-
+def l1_coherence(rho):
+    coherence = np.sum(np.abs(rho - np.diag(np.diag(rho)))) / (np.shape(rho)[0] - 1)
+    #print(coherence)
+    return coherence
