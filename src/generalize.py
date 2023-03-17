@@ -42,8 +42,8 @@ def results(rho, coerencias_R, coerencias_L):
     return coerencias_L, coerencias_R
 
 def plots(list_p, coerencias_R, coerencias_L):
-    plt.plot(list_p,coerencias_R,label='Rho_R')
-    plt.plot(list_p,coerencias_L,label='Rho_L')
+    # plt.plot(list_p,coerencias_R,label='Rho_R')
+    plt.scatter(list_p,coerencias_L,label='Rho_L')
     plt.xlabel(' p ')
     plt.ylabel(' Coerência L1 ')
     plt.legend(loc=4)
