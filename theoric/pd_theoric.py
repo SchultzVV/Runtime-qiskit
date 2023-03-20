@@ -17,7 +17,7 @@ def theoric_rho_A_pd(theta, phi, p):
     state = Matrix([[(cos(theta/2)**2),
                     (sqrt(1-p)*cos(theta/2)*exp(-1j*phi)*sin(theta/2))],[
                     (sqrt(1-p)*cos(theta/2)*exp(1j*phi)*sin(theta/2)),
-                    ((1-p)*sin(theta/2)**2)]])
+                    (sin(theta/2)**2)]])
     return state
 
 def plot_theoric_pd(list_p):
