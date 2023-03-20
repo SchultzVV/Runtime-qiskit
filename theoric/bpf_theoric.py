@@ -63,4 +63,4 @@ def plot_bpf_theoric(list_p):
 
         coh = coh_l1(rho_numpy)
         cohs.append(coh)
-    plt.plot(list_p,cohs,label='analítico')
+    plt.plot(list_p,cohs,label='Teórico')

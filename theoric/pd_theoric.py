@@ -13,17 +13,17 @@ gamma = Symbol('gamma',real=True, positive=True)
 p = Symbol('p',real=True, positive=True)
 
 
-def calculated_rho_A(theta, phi, p):
-    state = Matrix([[p*(sin(theta/2)**2)+(cos(theta/2)**2),
+def theoric_rho_A_pd(theta, phi, p):
+    state = Matrix([[(cos(theta/2)**2),
                     (sqrt(1-p)*cos(theta/2)*exp(-1j*phi)*sin(theta/2))],[
                     (sqrt(1-p)*cos(theta/2)*exp(1j*phi)*sin(theta/2)),
                     ((1-p)*sin(theta/2)**2)]])
     return state
 
-def plot_theoric_ad(list_p):
+def plot_theoric_pd(list_p):
     cohs = []
     for pp in list_p:
-        rho = calculated_rho_A(pi/2, 0,pp)
+        rho = theoric_rho_A_pd(pi/2, 0,pp)
         rho_numpy = np.array(rho.tolist(), dtype=np.complex64)
         coh = coh_l1(rho_numpy)
         cohs.append(coh)
