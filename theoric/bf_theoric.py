@@ -14,10 +14,10 @@ p = Symbol('p',real=True, positive=True)
 
 
 def theoric_rho_A_bf(theta, phi, p):
-    state = Matrix([[(1-p)*(cos(theta/2)**2) + p*(sin(theta/2)**2),
-                    (exp(-1j*phi)*2j*p*sin(theta/2)*cos(theta/2))],[
-                    (exp(1j*phi)*(-2j)*p*sin(theta/2)*cos(theta/2)),
-                    (1-p)*(sin(theta/2)**2)+p**(cos(theta/2)**2)]])
+    state = Matrix([[(1-p)*((cos(theta/2))**2) + p*((sin(theta/2))**2),
+                    (((exp(-1j*phi))+(2j*p*sin(phi)))*sin(theta/2)*cos(theta/2))],[
+                    (((exp(1j*phi))-(2j*p*sin(phi)))*sin(theta/2)*cos(theta/2)),
+                    (1-p)*(sin(theta/2)**2)+p*(cos(theta/2)**2)]])
     return state
 #a = theoric_rho_A_bf(theta, phi, p)
 #print(a)
@@ -29,7 +29,7 @@ def plot_theoric_bf(list_p):
         coh = coh_l1(rho_numpy)
         cohs.append(coh)
     plt.plot(list_p,cohs,label='Teórico')
-#list_p = np.linspace(0,1,20)
+list_p = np.linspace(0,1,20)
 
 #plot_theoric_bf(list_p)
 #plt.show()
