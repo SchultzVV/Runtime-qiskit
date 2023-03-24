@@ -35,7 +35,9 @@ class Simulate(object):
     def get_device(self):
         device = qml.device('qiskit.aer', wires=self.n_qubits, backend='qasm_simulator')
         return device
-    
+    def prepare_rho(self, p):
+        rho = self.rho_AB(pi/2,0,p)
+        return rho
     def general_vqacircuit_penny(self, params, n_qubits, depht=None):
         #self.n_qubits = 1
         if depht == None:
@@ -182,7 +184,7 @@ class Simulate(object):
             # defina o estado a ser preparado abaixo
             #------------------------------------------------------------
             #target_op = bpf(pi/2, 0, p)
-            target_op = QCH.get_target_op(self.rho_AB)
+            target_op = QCH.get_target_op(self.prepare_rho(p))
             #------------------------------------------------------------
 
             self.qc, self.qr, params = self.optmize(self.epochs, self.n_qubits, circuit, params, target_op, pretrain, self.step_to_start)
@@ -205,6 +207,15 @@ class Simulate(object):
         #    pickle.dump(save, f)
 
 
-#S = Simulate(object)
+
+from src.theoric_channels import TheoricMaps as TM
+plot_theoric = TM.theoric_rho_A_bpf
+rho_AB = QCH.rho_AB_bpf
+n_qubits = 2
+list_p = np.linspace(0,1,5)
+epochs = 1
+step_to_start = 1
+
+S = Simulate('bpf/ClassTest', n_qubits, list_p, epochs, step_to_start, rho_AB, plot_theoric)
 #S.run_calcs()
-#print(S)
+print(S)

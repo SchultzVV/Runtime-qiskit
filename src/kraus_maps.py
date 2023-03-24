@@ -24,7 +24,7 @@ class QuantumChannels(object):
         target_op = np.outer(state2.conj(), state2)
         target_op = tensor(target_op)
         return target_op
-
+    
     def rho_AB_ad(theta, phi, p):
         state = Matrix([[(cos(theta/2)),
                         (sqrt(p)*exp(1j*phi)*sin(theta/2)),
@@ -33,7 +33,7 @@ class QuantumChannels(object):
         M_numpy = np.array(state.tolist(), dtype=np.complex64)
         rho = simplify(M_numpy)
         return rho
-
+    @staticmethod
     def rho_AB_bpf(theta, phi, p):
         state = Matrix([[(sqrt(1-p)*(cos(theta/2))),
                         (-1j*sqrt(p)*exp(1j*phi)*sin(theta/2)),
@@ -87,5 +87,7 @@ class QuantumChannels(object):
 
 
 #a=10
-#QCH = QuantumChannels()
+QCH = QuantumChannels()
+a = QCH.rho_AB_bpf
+print(a(0,0,0))
 #print(QCH.get_target_op(QCH.rho_AB_pd(pi/2,0,0)))

@@ -7,7 +7,7 @@ import numpy as np
 #----------------------------------------------------------------------------------------
 # escolha um estado-------------------
 
-rho_AB = QCH.rho_AB_bpf(pi/2, 0, 0.5)
+rho_AB = QCH.rho_AB_bpf
 #rho_AB = QCH.rho_AB_bf(pi/2, 0, 0.5)
 #rho_AB = QCH.rho_AB_pf(pi/2, 0, 0.5)
 #rho_AB = QCH.rho_AB_pd(pi/2, 0, 0.5)
@@ -33,7 +33,7 @@ plot_theoric = TM.theoric_rho_A_bpf
 
 
 
-
+rho_AB = QCH.rho_AB_bpf
 n_qubits = 2
 list_p = np.linspace(0,1,5)
 epochs = 1
