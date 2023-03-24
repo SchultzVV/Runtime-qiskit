@@ -1,4 +1,4 @@
-from src import pTrace
+import pTrace
 import math
 import numpy as np
 
