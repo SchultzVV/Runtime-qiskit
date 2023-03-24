@@ -9,22 +9,17 @@ import matplotlib.pyplot as plt
 from src.pTrace import pTraceR_num, pTraceL_num
 from src.coherence import coh_l1
 import numpy as np
-#from vqa_tools import general_vqacircuit_penny 
-#from generalize import *
 from torch import tensor
 from numpy import sin,cos,sqrt,outer,zeros, pi
 import cmath
 import pickle
-#from theoric.ad_theoric import *
-
-#from theoric_channels import plot_theoric_ad
-from kraus_maps import QuantumChannels as qch
-
+from src.kraus_maps import QuantumChannels as QCH
+from src.theoric_channels import TheoricMaps as tm
 
 
 class Simulate(object):
 
-    def __init__(self, data_name, n_qubits, list_p, epochs, step_to_start, rho_AB):
+    def __init__(self, data_name, n_qubits, list_p, epochs, step_to_start, rho_AB, theoric):
         self.list_p = list_p
         self.epochs = epochs
         self.step_to_start = step_to_start
@@ -35,6 +30,7 @@ class Simulate(object):
         pretrain = True
         self.n_qubits = n_qubits
         self.depht = n_qubits +1
+        self.theoric = theoric
    
     def get_device(self):
         device = qml.device('qiskit.aer', wires=self.n_qubits, backend='qasm_simulator')
@@ -186,7 +182,7 @@ class Simulate(object):
             # defina o estado a ser preparado abaixo
             #------------------------------------------------------------
             #target_op = bpf(pi/2, 0, p)
-            target_op = qch.get_target_op(self.rho_AB)
+            target_op = QCH.get_target_op(self.rho_AB)
             #------------------------------------------------------------
 
             self.qc, self.qr, params = self.optmize(self.epochs, self.n_qubits, circuit, params, target_op, pretrain, self.step_to_start)
@@ -195,9 +191,14 @@ class Simulate(object):
             #print(rho)
             self.coerencias_L, self.coerencias_R = self.results(rho, self.coerencias_R, self.coerencias_L)
         mylist = [self.coerencias_L, self.coerencias_R, params]
-        with open(f'../data/{self.path_save}.pkl', 'wb') as f:
+        with open(f'data/{self.path_save}.pkl', 'wb') as f:
             pickle.dump(mylist, f)
         #plot_theoric_ad(list_p)
+        
+        #s = np.linspace(0,1,10)
+        #z = a.theoric_rho_A_ad(np.pi/2,0,0)
+        #tm.plot_theoric(self.list_p,self.theoric)
+        #TM.plot_theoric(self.list_p , TM.theoric_rho_A_ad)
         self.plots(self.list_p, self.coerencias_R, self.coerencias_L)
         #save = [list_p, coerencias_R, coerencias_L]
         #with open('data/BPFlist_p-coerencias_R-coerencias_L.pkl', 'wb') as f:

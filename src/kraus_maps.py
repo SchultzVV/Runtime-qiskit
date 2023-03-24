@@ -70,7 +70,7 @@ class QuantumChannels(object):
         rho = simplify(M_numpy)
         return rho
 
-    def rho_AB_d(self, theta, phi, p):
+    def rho_AB_d(theta, phi, p):
         state = Matrix([[(sqrt(1-3*p/4)*cos(theta/2)),
                         (sqrt(p/4)*exp(1j*phi)*sin(theta/2)),
                         -1j*(sqrt(p/4)*exp(1j*phi)*sin(theta/2)),
