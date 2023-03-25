@@ -80,6 +80,16 @@ class TheoricMaps():
                         ((1-2*p)*exp(1j*phi)*sin(phi)*cos(theta/2)),
                         sin(theta/2)**2]])
         return state
+    
+    def theoric_rho_A_gad(self, theta, phi, p):
+        gamma = 0.5
+        state = Matrix([[sqrt(p)*cos(theta/2),
+                         sqrt(p*gamma)*exp(-1j*phi)*sin(theta/2),
+                         sqrt((1-p)*(1-gamma))
+                        ((1-2*p)*exp(-1j*phi)*sin(phi)*cos(theta/2))],[
+                        ((1-2*p)*exp(1j*phi)*sin(phi)*cos(theta/2)),
+                        sin(theta/2)**2]])
+        return state
 
 
     def plot_theoric(self, list_p, rho_A_map):

@@ -36,8 +36,24 @@ class Simulate(object):
         device = qml.device('qiskit.aer', wires=self.n_qubits, backend='qasm_simulator')
         return device
     def prepare_rho(self, p):
-        rho = self.rho_AB(pi/2,0,p)
+        rho = self.rho_AB(pi/2, 0, p)
         return rho
+    def prepare_rho_t(self, p):
+        rho = self.theoric(pi/2, 0, p)
+        return rho
+
+    def plot_theoric(self):
+        cohs = []
+        for p in self.list_p:
+            rho = self.prepare_rho_t(p)
+            rho_numpy = np.array(rho.tolist(), dtype=np.complex64)
+            coh = self.coh_l1(rho_numpy)
+            cohs.append(coh)
+        plt.plot(self.list_p,cohs,label='Teórico')
+
+    def prepare_plot(self, list_p):
+        return tm.plot_theoric(self.list_p ,self.theoric(pi/2,0))
+
     def general_vqacircuit_penny(self, params, n_qubits, depht=None):
         #self.n_qubits = 1
         if depht == None:
@@ -200,7 +216,9 @@ class Simulate(object):
         #s = np.linspace(0,1,10)
         #z = a.theoric_rho_A_ad(np.pi/2,0,0)
         #tm.plot_theoric(self.list_p,self.theoric)
-        #TM.plot_theoric(self.list_p , TM.theoric_rho_A_ad)
+        #tm.plot_theoric(self.list_p ,theoric_plot)
+        self.plot_theoric()
+        #self.prepare_plot(self.list_p)
         self.plots(self.list_p, self.coerencias_R, self.coerencias_L)
         #save = [list_p, coerencias_R, coerencias_L]
         #with open('data/BPFlist_p-coerencias_R-coerencias_L.pkl', 'wb') as f:
@@ -208,14 +226,14 @@ class Simulate(object):
 
 
 
-from src.theoric_channels import TheoricMaps as TM
-plot_theoric = TM.theoric_rho_A_bpf
-rho_AB = QCH.rho_AB_bpf
-n_qubits = 2
-list_p = np.linspace(0,1,5)
-epochs = 1
-step_to_start = 1
-
-S = Simulate('bpf/ClassTest', n_qubits, list_p, epochs, step_to_start, rho_AB, plot_theoric)
+#from src.theoric_channels import TheoricMaps as TM
+#plot_theoric = TM.theoric_rho_A_bpf
+#rho_AB = QCH.rho_AB_bpf
+#n_qubits = 2
+#list_p = np.linspace(0,1,5)
+#epochs = 1
+#step_to_start = 1
+#
+#S = Simulate('bpf/ClassTest', n_qubits, list_p, epochs, step_to_start, rho_AB, plot_theoric)
 #S.run_calcs()
-print(S)
+#print(S)
