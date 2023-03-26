@@ -1,6 +1,7 @@
 from torch.autograd import Variable
 import pennylane as qml
 from qiskit import *
+from qiskit import Aer, execute
 from qiskit.ignis.verification.tomography import state_tomography_circuits, StateTomographyFitter
 from qiskit import QuantumRegister
 from qiskit import QuantumCircuit
@@ -10,8 +11,7 @@ from src.pTrace import pTraceR_num, pTraceL_num
 from src.coherence import coh_l1
 import numpy as np
 from torch import tensor
-from numpy import sin,cos,sqrt,outer,zeros, pi
-import cmath
+from numpy import pi
 import pickle
 from src.kraus_maps import QuantumChannels as QCH
 from src.theoric_channels import TheoricMaps as tm
@@ -19,40 +19,31 @@ from src.theoric_channels import TheoricMaps as tm
 
 class Simulate(object):
 
-    def __init__(self, data_name, n_qubits, list_p, epochs, step_to_start, rho_AB, theoric):
+    def __init__(self, map_name, n_qubits, list_p, epochs, step_to_start, rho_AB):
         self.list_p = list_p
         self.epochs = epochs
         self.step_to_start = step_to_start
         self.rho_AB = rho_AB
         self.coerencias_R = []
-        self.path_save = data_name
+        self.map_name = map_name
         self.coerencias_L = []
-        pretrain = True
         self.n_qubits = n_qubits
         self.depht = n_qubits +1
-        self.theoric = theoric
    
     def get_device(self):
         device = qml.device('qiskit.aer', wires=self.n_qubits, backend='qasm_simulator')
         return device
-    def prepare_rho(self, p):
-        rho = self.rho_AB(pi/2, 0, p)
-        return rho
-    def prepare_rho_t(self, p):
-        rho = self.theoric(pi/2, 0, p)
+    
+    def prepare_rho(self, theta, phi, p):
+        rho = self.rho_AB(theta, phi, p)
         return rho
 
-    def plot_theoric(self):
-        cohs = []
-        for p in self.list_p:
-            rho = self.prepare_rho_t(p)
-            rho_numpy = np.array(rho.tolist(), dtype=np.complex64)
-            coh = self.coh_l1(rho_numpy)
-            cohs.append(coh)
-        plt.plot(self.list_p,cohs,label='Teórico')
+    def plot_theoric_map(self, theta, phi):
+        a = tm()
+        a.plot_theoric(self.list_p,self.map_name,theta,phi)
 
-    def prepare_plot(self, list_p):
-        return tm.plot_theoric(self.list_p ,self.theoric(pi/2,0))
+    #def prepare_plot(self, list_p):
+    #    return tm.plot_theoric(self.list_p ,self.theoric(pi/2,0))
 
     def general_vqacircuit_penny(self, params, n_qubits, depht=None):
         #self.n_qubits = 1
@@ -103,7 +94,7 @@ class Simulate(object):
     def fidelidade(self, circuit, params, target_op):
         return circuit(params, M=target_op).item()
 
-    def train_ok(self, epocas, circuit, params, target_op, pretrain, pretrain_steps):
+    def train(self, epocas, circuit, params, target_op, pretrain, pretrain_steps):
         opt = torch.optim.Adam([params], lr=0.1)
         best_loss = 1*self.cost(circuit, params, target_op)
         #device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -153,7 +144,7 @@ class Simulate(object):
         return qc, qr
 
     def optmize(self, epochs, n_qubits, circuit, params, target_op, pretrain, pretrain_steps):
-        best_params, f = self.train_ok(epochs, circuit, params, target_op, pretrain, pretrain_steps)
+        best_params, f = self.train(epochs, circuit, params, target_op, pretrain, pretrain_steps)
         parametros = best_params.clone().detach().numpy()
         qc, qr = self.general_vqacircuit_qiskit(self.n_qubits, parametros)
         best_params = Variable(tensor(parametros), requires_grad=True)
@@ -177,14 +168,14 @@ class Simulate(object):
 
         return coerencias_L, coerencias_R
 
-    def plots(self, list_p, coerencias_R, coerencias_L):
-        # plt.plot(list_p,coerencias_R,label='Rho_R')
+    def plots(self, list_p, coerencias_L):
         plt.scatter(list_p,coerencias_L,label='Simulado')
         plt.xlabel(' p ')
         plt.ylabel(' Coerência ')
         plt.legend(loc=0)
         plt.show()
-    def run_calcs(self):
+
+    def run_calcs(self, save, theta, phi):
         #coerencias_R = []
         #coerencias_L = []
         pretrain = True
@@ -200,7 +191,7 @@ class Simulate(object):
             # defina o estado a ser preparado abaixo
             #------------------------------------------------------------
             #target_op = bpf(pi/2, 0, p)
-            target_op = QCH.get_target_op(self.prepare_rho(p))
+            target_op = QCH.get_target_op(self.prepare_rho(theta, phi, p))
             #------------------------------------------------------------
 
             self.qc, self.qr, params = self.optmize(self.epochs, self.n_qubits, circuit, params, target_op, pretrain, self.step_to_start)
@@ -209,17 +200,23 @@ class Simulate(object):
             #print(rho)
             self.coerencias_L, self.coerencias_R = self.results(rho, self.coerencias_R, self.coerencias_L)
         mylist = [self.coerencias_L, self.coerencias_R, params]
-        with open(f'data/{self.path_save}.pkl', 'wb') as f:
-            pickle.dump(mylist, f)
+        if save:
+            with open(f'data/{self.map_name}/ClassTestcasa.pkl', 'wb') as f:
+                pickle.dump(mylist, f)
         #plot_theoric_ad(list_p)
         
         #s = np.linspace(0,1,10)
         #z = a.theoric_rho_A_ad(np.pi/2,0,0)
         #tm.plot_theoric(self.list_p,self.theoric)
-        #tm.plot_theoric(self.list_p ,theoric_plot)
-        self.plot_theoric()
+        
+        #tm.plot_theoric(list_p=self.list_p,map_name=map,theta=theta,phi=phi)
         #self.prepare_plot(self.list_p)
-        self.plots(self.list_p, self.coerencias_R, self.coerencias_L)
+        #print(self.map_name)
+        #print(self.list_p)
+        #print(theta)
+        #print(phi)
+        self.plot_theoric_map(theta, phi)
+        self.plots(self.list_p, self.coerencias_L)
         #save = [list_p, coerencias_R, coerencias_L]
         #with open('data/BPFlist_p-coerencias_R-coerencias_L.pkl', 'wb') as f:
         #    pickle.dump(save, f)

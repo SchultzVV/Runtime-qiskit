@@ -45,18 +45,18 @@ class QuantumChannels(object):
 
     def rho_AB_bf(theta, phi, p):
         state = Matrix([[(sqrt(1-p)*cos(theta/2)),
-                        (sqrt(p)*exp(1j*phi)*sin(theta/2)),
-                        (sqrt(1-p)*exp(1j*phi)*sin(theta/2)),
-                        sqrt(p)*cos(theta/2)]])
-        M_numpy = np.array(state.tolist(), dtype=np.complex64)
-        rho = simplify(M_numpy)
-        return rho
-
-    def rho_AB_pf(theta, phi, p):
-        state = Matrix([[(sqrt(1-p)*cos(theta/2)),
                         (sqrt(p)*cos(theta/2)),
                         (sqrt(1-p)*exp(1j*phi)*sin(theta/2)),
                         -sqrt(p)*sin(theta/2)]])
+        M_numpy = np.array(state.tolist(), dtype=np.complex64)
+        rho = simplify(M_numpy)
+        return M_numpy
+
+    def rho_AB_pf(theta, phi, p):
+        state = Matrix([[(sqrt(1-p)*cos(theta/2)),
+                        -(sqrt(p)*1j*sin(theta/2)),
+                        (sqrt(p)*1j*cos(theta/2) +sqrt(1-p)*exp(1j*phi)*sin(theta/2)),
+                        0]])
         M_numpy = np.array(state.tolist(), dtype=np.complex64)
         rho = simplify(M_numpy)
         return rho

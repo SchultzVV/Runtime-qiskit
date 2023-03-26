@@ -7,8 +7,8 @@ import numpy as np
 #----------------------------------------------------------------------------------------
 #rho_AB = QCH.rho_AB_d(pi/2, 0, 0.5)
 #----------------------------------------------------------------------------------------
-plot_theoric = TM.theoric_rho_A_bpf
-#plot_theoric = TM.theoric_rho_A_bf
+#plot_theoric = TM.theoric_rho_A_bpf
+#plot_theoric =  TM.theoric_rho_A_bf
 #plot_theoric = TM.theoric_rho_A_pf
 #plot_theoric = TM.theoric_rho_A_pd
 #plot_theoric = TM.theoric_rho_A_ad
@@ -20,10 +20,10 @@ plot_theoric = TM.theoric_rho_A_bpf
 # escolha um estado-------------------
 
 #rho_AB = QCH.rho_AB_bpf
-#rho_AB = QCH.rho_AB_bf
+rho_AB = QCH.rho_AB_bf
 #rho_AB = QCH.rho_AB_pf
 #rho_AB = QCH.rho_AB_pd
-rho_AB = QCH.rho_AB_ad
+#rho_AB = QCH.rho_AB_ad
 #rho_AB = QCH.rho_AB_adg
 #rho_AB = QCH.rho_AB_d
 #rho_AB = QCH.rho_AB_l
@@ -33,9 +33,9 @@ rho_AB = QCH.rho_AB_ad
 
 n_qubits = 2
 list_p = np.linspace(0,1,21)
-epochs = 120
+epochs = 50
 step_to_start = 80
 
-S = Simulate('ad/ClassTestcasa', n_qubits, list_p, epochs, step_to_start, rho_AB, plot_theoric)
+S = Simulate('bf', n_qubits, list_p, epochs, step_to_start, rho_AB)
 
-S.run_calcs()
+S.run_calcs(True, pi/2, pi/2)

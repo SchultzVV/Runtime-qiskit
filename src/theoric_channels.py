@@ -5,18 +5,44 @@ import matplotlib.pyplot as plt
 import numpy as np 
 import math
 #from ..theoric.tools import coh_l1, pTraceR_num, pTraceL_num
-
+import pickle
 
 
 class TheoricMaps():
     def __init__(self):
-        theta = Symbol('theta',real=True)
-        phi = Symbol('phi',real=True)
-        gamma = Symbol('gamma',real=True, positive=True)
-        p = Symbol('p',real=True, positive=True)
+        self.theta = Symbol('theta',real=True)
+        self.phi = Symbol('phi',real=True)
+        self.gamma = Symbol('gamma',real=True, positive=True)
+        self.p = Symbol('p',real=True, positive=True)
+        #self.theta = theta
+        #self.phi = phi
+        #self.gamma = gamma
+        #self.p = p
         #self.path_save = f"result_{camera.split('/')[-1]}"\
         #    .replace(".mp4", ".csv")
     
+    def read_data(self,path):
+        with open(path, 'rb') as f:
+            data = pickle.load(f)
+        return data
+    
+    def map_choser(self,map_name):
+        list_of_maps = ['bpf','ad','bf','pf','pd']#,'adg','d','l','H','ad3']
+        list_of_functions = [self.theoric_rho_A_bpf, self.theoric_rho_A_ad,
+                             self.theoric_rho_A_bf, self.theoric_rho_A_pf,
+                             self.theoric_rho_A_pd
+                            ]
+            #self.theoric_rho_A_adg,
+            #self.theoric_rho_A_d,
+            #self.theoric_rho_A_l,
+            #self.theoric_rho_A_H,
+            #self.theoric_rho_A_ad3   ]
+        if map_name in list_of_maps:
+            print(list_of_maps.index(map_name))
+            return list_of_functions[list_of_maps.index(map_name)]
+
+
+
     def coh_l1(self,rho):  # normalized to [0,1]
         d = rho.shape[0]
         coh = 0.0
@@ -46,6 +72,10 @@ class TheoricMaps():
                 rhoL[k,j] = np.conj(rhoL[j,k])
         return rhoL
     
+    #def print_state(self):
+        
+    #    self.theoric_rho_A_ad(self.theta,self.phi, self.p)
+
     def theoric_rho_A_ad(self,theta, phi, p):
         state = Matrix([[p*(sin(theta/2)**2)+(cos(theta/2)**2),
                         (sqrt(1-p)*cos(theta/2)*exp(-1j*phi)*sin(theta/2))],[
@@ -76,8 +106,16 @@ class TheoricMaps():
 
     def theoric_rho_A_pf(self, theta, phi, p):
         state = Matrix([[(cos(theta/2))**2,
-                        ((1-2*p)*exp(-1j*phi)*sin(phi)*cos(theta/2))],[
-                        ((1-2*p)*exp(1j*phi)*sin(phi)*cos(theta/2)),
+                        ((1-2*p)*exp(-1j*phi)*sin(theta/2)*cos(theta/2))],[
+                        ((1-2*p)*exp(1j*phi)*sin(theta/2)*cos(theta/2)),
+                        sin(theta/2)**2]])
+        return state
+    
+    def theoric_rho_A_d(self, theta, phi, p):
+        state = Matrix([[(p/2)*(sin(theta/2))**2+(1-(p/2))*((cos(theta/2))**2),
+                        ((1-p)*exp(-1j*phi)*sin(theta/2)*cos(theta/2))],[
+                        ((1-p)*exp(1j*phi)*sin(theta/2)*cos(theta/2)),
+                        ((1-p/2)*exp(1j*phi)*((sin(theta/2))**2))+(p/2)*((cos(theta/2))**2),
                         sin(theta/2)**2]])
         return state
     
@@ -91,18 +129,49 @@ class TheoricMaps():
                         sin(theta/2)**2]])
         return state
 
+    def plot_storaged(self, map_name):
+        #path = f'../data/{map}/{map}-coherences.pkl'
+        path = f'data/{map_name}/ClassTestcasa.pkl'
+        rho_l = self.read_data(path)[0]#.detach().numpy()
+        plt.scatter(np.linspace(0,1,len(rho_l)),rho_l,label=map_name)
 
-    def plot_theoric(self, list_p, rho_A_map):
+        #print(data[1])
+
+    def plot_theoric(self, list_p, map_name, theta, phi):
         cohs = []
         for pp in list_p:
-            rho = rho_A_map(pi/2, 0,pp)
+            rho = self.map_choser(map_name)(theta,phi,pp)
             rho_numpy = np.array(rho.tolist(), dtype=np.complex64)
             coh = self.coh_l1(rho_numpy)
             cohs.append(coh)
-        plt.plot(list_p,cohs,label='Teórico')
+        plt.plot(list_p,cohs,label=map_name)
     
-#a = TheoricMaps()
-#s = linspace(0,1,10)
-#z = a.theoric_rho_A_ad
-#a.plot_theoric(s,z)
-#plt.show()
+def main():
+    a = TheoricMaps()
+    #a.theoric_rho_A_pf()
+    x = np.linspace(0,1,21)
+    a.plot_storaged('ad')
+    a.plot_theoric(x,'ad',theta=pi/2,phi=0)
+
+    a.plot_storaged('pf')
+    a.plot_theoric(x,'pf',theta=pi/2,phi=pi/2)
+
+    a.plot_storaged('bf')
+    a.plot_theoric(x,'bf',theta=pi/2,phi=pi/2)
+
+    a.plot_storaged('bpf')
+    a.plot_theoric(x,'bpf',theta=pi/2,phi=0.0)
+
+    a.plot_storaged('d')
+    #a.plot_theoric(x,'d',theta=pi/2,phi=0)
+
+    plt.legend()
+    #plt.show()
+    #s = linspace(0,1,10)
+    #z = a.theoric_rho_A_ad
+    #a.plot_theoric(s,z)
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
