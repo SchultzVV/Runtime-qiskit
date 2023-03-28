@@ -6,7 +6,9 @@ import numpy as np
 import math
 #from ..theoric.tools import coh_l1, pTraceR_num, pTraceL_num
 import pickle
-
+import sys
+sys.path.append('runtime-qiskit')
+sys.path.append('src')
 
 class TheoricMaps():
     def __init__(self):
@@ -27,10 +29,10 @@ class TheoricMaps():
         return data
     
     def map_choser(self,map_name):
-        list_of_maps = ['bpf','ad','bf','pf','pd']#,'adg','d','l','H','ad3']
+        list_of_maps = ['bpf','ad','bf','pf','pd','d']#,'adg','d','l','H','ad3']
         list_of_functions = [self.theoric_rho_A_bpf, self.theoric_rho_A_ad,
                              self.theoric_rho_A_bf, self.theoric_rho_A_pf,
-                             self.theoric_rho_A_pd
+                             self.theoric_rho_A_pd, self.theoric_rho_A_d
                             ]
             #self.theoric_rho_A_adg,
             #self.theoric_rho_A_d,
@@ -38,7 +40,7 @@ class TheoricMaps():
             #self.theoric_rho_A_H,
             #self.theoric_rho_A_ad3   ]
         if map_name in list_of_maps:
-            print(list_of_maps.index(map_name))
+            #print(list_of_maps.index(map_name))
             return list_of_functions[list_of_maps.index(map_name)]
 
 
@@ -50,6 +52,7 @@ class TheoricMaps():
             for k in range(j+1, d):
                 coh += math.sqrt((rho[j][k].real)**2.0 + (rho[j][k].imag)**2.0)
         return 2.0*coh/(d-1)
+    
     def pTraceL_num(dl, dr, rhoLR):
         # Returns the left partial trace over the 'left' subsystem of rhoLR
         rhoR = np.zeros((dr, dr), dtype=complex)
@@ -112,11 +115,11 @@ class TheoricMaps():
         return state
     
     def theoric_rho_A_d(self, theta, phi, p):
-        state = Matrix([[(p/2)*(sin(theta/2))**2+(1-(p/2))*((cos(theta/2))**2),
+        state = Matrix([[(p/2)*(sin(theta/2))**2+(1-p/2)*(cos(theta/2))**2,
                         ((1-p)*exp(-1j*phi)*sin(theta/2)*cos(theta/2))],[
                         ((1-p)*exp(1j*phi)*sin(theta/2)*cos(theta/2)),
-                        ((1-p/2)*exp(1j*phi)*((sin(theta/2))**2))+(p/2)*((cos(theta/2))**2),
-                        sin(theta/2)**2]])
+                        ((1-p/2)*(sin(theta/2)**2))+(p/2)*(cos(theta/2))**2
+                        ]])
         return state
     
     def theoric_rho_A_gad(self, theta, phi, p):
@@ -144,17 +147,20 @@ class TheoricMaps():
             rho_numpy = np.array(rho.tolist(), dtype=np.complex64)
             coh = self.coh_l1(rho_numpy)
             cohs.append(coh)
-        plt.plot(list_p,cohs,label=map_name)
+        m = f'{map_name}, {theta}, {phi}'
+        plt.plot(list_p,cohs,label=m)
     
 def main():
     a = TheoricMaps()
     #a.theoric_rho_A_pf()
     x = np.linspace(0,1,21)
+    
     a.plot_storaged('ad')
     a.plot_theoric(x,'ad',theta=pi/2,phi=0)
 
     a.plot_storaged('pf')
-    a.plot_theoric(x,'pf',theta=pi/2,phi=pi/2)
+    a.plot_theoric(x,'pf',theta=pi/2,phi=0)
+    
 
     a.plot_storaged('bf')
     a.plot_theoric(x,'bf',theta=pi/2,phi=pi/2)
@@ -163,7 +169,10 @@ def main():
     a.plot_theoric(x,'bpf',theta=pi/2,phi=0.0)
 
     a.plot_storaged('d')
-    #a.plot_theoric(x,'d',theta=pi/2,phi=0)
+    a.plot_theoric(x,'d',theta=pi/2,phi=0)
+
+    #a.plot_storaged('l')
+    #a.plot_theoric(x,'l',theta=pi/2,phi=pi/2)
 
     plt.legend()
     #plt.show()

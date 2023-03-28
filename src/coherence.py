@@ -1,7 +1,9 @@
-import src.pTrace
 import math
 import numpy as np
-
+import sys
+sys.path.append('runtime-qiskit')
+sys.path.append('src')
+import pTrace
 #def coh(rho, name):
 #    if name == 'l1':
 #        return coh_l1(rho)

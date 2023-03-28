@@ -7,14 +7,23 @@ from qiskit import QuantumRegister
 from qiskit import QuantumCircuit
 import torch
 import matplotlib.pyplot as plt
-from src.pTrace import pTraceR_num, pTraceL_num
-from src.coherence import coh_l1
 import numpy as np
 from torch import tensor
 from numpy import pi
+import sys
+sys.path.append('runtime-qiskit')
+sys.path.append('src')
+#sys.path.append('src')
 import pickle
-from src.kraus_maps import QuantumChannels as QCH
-from src.theoric_channels import TheoricMaps as tm
+#from src.pTrace import pTraceR_num, pTraceL_num
+#from src.coherence import coh_l1
+#from src.kraus_maps import QuantumChannels as QCH
+#from src.theoric_channels import TheoricMaps as tm
+
+from pTrace import pTraceR_num, pTraceL_num
+from coherence import coh_l1
+from kraus_maps import QuantumChannels as QCH
+from theoric_channels import TheoricMaps as tm
 
 
 class Simulate(object):
@@ -169,15 +178,17 @@ class Simulate(object):
         return coerencias_L, coerencias_R
 
     def plots(self, list_p, coerencias_L):
+        print(list_p)
+        print(len(coerencias_L))
         plt.scatter(list_p,coerencias_L,label='Simulado')
         plt.xlabel(' p ')
         plt.ylabel(' Coerência ')
-        plt.legend(loc=0)
-        plt.show()
+        #plt.legend(loc=0)
+        #plt.show()
 
     def run_calcs(self, save, theta, phi):
         #coerencias_R = []
-        #coerencias_L = []
+        coerencias_L = []
         pretrain = True
         count = 0
         #self.n_qubits = 2
@@ -198,7 +209,7 @@ class Simulate(object):
             pretrain = False
             rho = self.tomograph()
             #print(rho)
-            self.coerencias_L, self.coerencias_R = self.results(rho, self.coerencias_R, self.coerencias_L)
+            self.coerencias_L, self.coerencias_R = self.results(rho, self.coerencias_R, coerencias_L)
         mylist = [self.coerencias_L, self.coerencias_R, params]
         if save:
             with open(f'data/{self.map_name}/ClassTestcasa.pkl', 'wb') as f:
@@ -220,8 +231,30 @@ class Simulate(object):
         #save = [list_p, coerencias_R, coerencias_L]
         #with open('data/BPFlist_p-coerencias_R-coerencias_L.pkl', 'wb') as f:
         #    pickle.dump(save, f)
+    
+    def run_sequential_bf(self, phis):
+        for i in phis:
+            self.run_calcs(True, pi/2, i)
 
 
+def main():
+    #space = np.linspace(0, 2*pi, )
+    n_qubits = 2
+    list_p = np.linspace(0,1,21)
+    epochs = 130
+    step_to_start = 85
+    rho_AB = QCH.rho_AB_bf
+
+    S = Simulate('bf', n_qubits, list_p, epochs, step_to_start, rho_AB)
+    S.run_calcs(True, pi/2, pi/2)
+
+    #phis = [0,pi,pi/1.5,pi/2,pi/3,pi/4,pi/5]
+    #S.run_sequential_bf(phis)
+    plt.legend(loc=0)
+    plt.show()
+
+if __name__ == "__main__":
+    main()
 
 #from src.theoric_channels import TheoricMaps as TM
 #plot_theoric = TM.theoric_rho_A_bpf
