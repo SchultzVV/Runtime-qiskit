@@ -37,14 +37,14 @@ def run_calc_map():
 
 def single_run(save):
     
-    n_qubits = 2
+    n_qubits = 3
     list_p = np.linspace(0,1,21)
-    epochs = 130
-    step_to_start = 80
+    epochs = 300
+    step_to_start = 200
 
-    rho_AB = QCH.rho_AB_bf
-    S = Simulate('bf', n_qubits, list_p, epochs, step_to_start, rho_AB)
-    S.run_calcs(save, pi/2, pi/2)
+    rho_AB = QCH.rho_AB_d
+    S = Simulate('d', n_qubits, list_p, epochs, step_to_start, rho_AB)
+    S.run_calcs(save, pi/2, 0)
     plt.legend(loc=0)
     plt.show()
 single_run(True)

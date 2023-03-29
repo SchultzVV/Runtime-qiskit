@@ -35,7 +35,6 @@ class TheoricMaps():
                              self.theoric_rho_A_pd, self.theoric_rho_A_d
                             ]
             #self.theoric_rho_A_adg,
-            #self.theoric_rho_A_d,
             #self.theoric_rho_A_l,
             #self.theoric_rho_A_H,
             #self.theoric_rho_A_ad3   ]
@@ -147,40 +146,51 @@ class TheoricMaps():
             rho_numpy = np.array(rho.tolist(), dtype=np.complex64)
             coh = self.coh_l1(rho_numpy)
             cohs.append(coh)
-        m = f'{map_name}, {theta}, {phi}'
+        m = f'{map_name}, {str(theta)[0:4]}, {str(phi)[0:4]}'
         plt.plot(list_p,cohs,label=m)
+    
+    def plot_all_theoric_space(self,map):
+        li = np.linspace(0,2*np.pi, 5)
+        x = np.linspace(0,1,21)
+        for i in li:
+            for k in li:
+                self.plot_theoric(x,map,theta=k,phi=i)
+        lines = plt.gca().get_lines()
+        labels = [line.get_label() for line in lines[:8]]
+        plt.legend(labels=labels,loc=1)
+        plt.show()
     
 def main():
     a = TheoricMaps()
-    #a.theoric_rho_A_pf()
-    x = np.linspace(0,1,21)
+    #--------- para plotar os mapas para diferentes valores de theta e phi:-------
+    #a.plot_all_theoric_space('bpf')
+    #-----------------------------------------------------------------------------
     
+    #--------- para plotar todos os dados salvos com os valores teóricos:---------
+    x = np.linspace(0,1,21)
+
     a.plot_storaged('ad')
     a.plot_theoric(x,'ad',theta=pi/2,phi=0)
-
+#
     a.plot_storaged('pf')
     a.plot_theoric(x,'pf',theta=pi/2,phi=0)
-    
-
+    #
+#
     a.plot_storaged('bf')
-    a.plot_theoric(x,'bf',theta=pi/2,phi=pi/2)
-
+    a.plot_theoric(x,'pf',theta=pi/2,phi=0)
+#
     a.plot_storaged('bpf')
     a.plot_theoric(x,'bpf',theta=pi/2,phi=0.0)
-
+#
     a.plot_storaged('d')
     a.plot_theoric(x,'d',theta=pi/2,phi=0)
 
     #a.plot_storaged('l')
     #a.plot_theoric(x,'l',theta=pi/2,phi=pi/2)
 
-    plt.legend()
-    #plt.show()
-    #s = linspace(0,1,10)
-    #z = a.theoric_rho_A_ad
-    #a.plot_theoric(s,z)
+    plt.legend(loc=1)
     plt.show()
-
+    #-----------------------------------------------------------------------------
 
 if __name__ == "__main__":
     main()

@@ -51,11 +51,8 @@ class Simulate(object):
         a = tm()
         a.plot_theoric(self.list_p,self.map_name,theta,phi)
 
-    #def prepare_plot(self, list_p):
-    #    return tm.plot_theoric(self.list_p ,self.theoric(pi/2,0))
 
     def general_vqacircuit_penny(self, params, n_qubits, depht=None):
-        #self.n_qubits = 1
         if depht == None:
             depht = self.n_qubits+1
         n = 3*self.n_qubits*(1+depht)
@@ -250,7 +247,7 @@ def main():
 
     #phis = [0,pi,pi/1.5,pi/2,pi/3,pi/4,pi/5]
     #S.run_sequential_bf(phis)
-    plt.legend(loc=0)
+    plt.legend(loc=1)
     plt.show()
 
 if __name__ == "__main__":
