@@ -32,8 +32,6 @@ class QuantumChannels(object):
                         (sqrt(p)*exp(1j*phi)*sin(theta/2)),
                         (sqrt(1-p)*exp(1j*phi)*sin(theta/2)),
                         0]])
-        #M_numpy = np.array(state.tolist(), dtype=np.complex64)
-        #rho = simplify(M_numpy)
         return state
     
     def rho_AB_bpf(theta, phi, p):
@@ -41,8 +39,6 @@ class QuantumChannels(object):
                         (-1j*sqrt(p)*exp(1j*phi)*sin(theta/2)),
                         (sqrt(1-p)*exp(1j*phi)*sin(theta/2)),
                         (1j*sqrt(p)*cos(theta/2))]])
-        #M_numpy = np.array(state.tolist(), dtype=np.complex64)
-        #rho = simplify(M_numpy)
         return state
 
     def rho_AB_bf(theta, phi, p):
@@ -50,9 +46,7 @@ class QuantumChannels(object):
                         (sqrt(p)*exp(1j*phi)*sin(theta/2)),
                         (sqrt(1-p)*exp(1j*phi)*sin(theta/2)),
                         sqrt(p)*cos(theta/2)]])
-        M_numpy = np.array(state.tolist(), dtype=np.complex64)
-        rho = simplify(M_numpy)
-        return rho
+        return state
 
     def rho_AB_pf(theta, phi, p):
         state = Matrix([[(sqrt(1-p)*cos(theta/2)),
@@ -60,9 +54,6 @@ class QuantumChannels(object):
                         (sqrt(p)*1j*cos(theta/2) +sqrt(1-p)*exp(1j*phi)*sin(theta/2)),
                         0]])
         return state
-        M_numpy = np.array(state.tolist(), dtype=np.complex64)
-        rho = simplify(M_numpy)
-        return rho
 
     def rho_AB_pd(theta, phi, p):
         state = Matrix([[(cos(theta/2)),
@@ -70,24 +61,36 @@ class QuantumChannels(object):
                         (sqrt(1-p)*exp(1j*phi)*sin(theta/2)),
                         (sqrt(p)*exp(1j*phi)*sin(theta/2))]])
         return state
-        M_numpy = np.array(state.tolist(), dtype=np.complex64)
-        rho = simplify(M_numpy)
-        return rho
+    @staticmethod
+    def rho_AB_l(theta, phi, p):
+        state = Matrix([[sqrt(1/2)*(cos(p/2)*cos(theta/2) + sin(p/2)*exp(1j*phi)*sin(theta/2)),
+                         sqrt(1/2)*(cos(p/2)*cos(theta/2) - sin(p/2)*exp(1j*phi)*sin(theta/2)),
+                         sqrt(1/2)*(cos(p/2)*exp(1j*phi)*sin(theta/2) - sin(p/2)*cos(theta/2)),
+                         sqrt(1/2)*(cos(p/2)*exp(1j*phi)*sin(theta/2) + sin(p/2)*cos(theta/2))
+                         ]])
+        return state
 
+    #def rho_AB_d_old(theta, phi, p):
+    #    state = Matrix([[(sqrt(1-3*p/4)*cos(theta/2)),
+    #                    (sqrt(p/4)*exp(1j*phi)*sin(theta/2)),
+    #                    -1j*(sqrt(p/4)*exp(1j*phi)*sin(theta/2)),
+    #                    (sqrt(p/4)*cos(theta/2)),
+    #                    (sqrt(1-3*p/4)*exp(1j*phi)*sin(theta/2)),
+    #                    (sqrt(p/4)*cos(theta/2)),
+    #                    (1j*sqrt(p/4)*cos(theta/2)),
+    #                    0]])
+    #    return state
     def rho_AB_d(theta, phi, p):
         state = Matrix([[(sqrt(1-3*p/4)*cos(theta/2)),
-                        (sqrt(p/4)*exp(1j*phi)*sin(theta/2)),
-                        -1j*(sqrt(p/4)*exp(1j*phi)*sin(theta/2)),
-                        (sqrt(p/4)*cos(theta/2)),
                         (sqrt(1-3*p/4)*exp(1j*phi)*sin(theta/2)),
                         (sqrt(p/4)*cos(theta/2)),
+                        (sqrt(p/4)*exp(1j*phi)*sin(theta/2)),
                         (1j*sqrt(p/4)*cos(theta/2)),
-                        0]])
-        #M_numpy = np.array(state.tolist(), dtype=np.complex64)
-        #rho = simplify(M_numpy)
+                        (-1j*sqrt(p/4)*exp(1j*phi)*sin(theta/2)),
+                        (sqrt(p/4)*cos(theta/2)),
+                        -(sqrt(p/4)*exp(1j*phi)*sin(theta/2))
+                        ]])
         return state
-        #target_op = self.get_target_op(rho) 
-        #return target_op
 
     def show_eq(rho, theta=None, phi=None, gamma=None, p=None):
         if theta == None or phi == None or gamma == None or p == None:
