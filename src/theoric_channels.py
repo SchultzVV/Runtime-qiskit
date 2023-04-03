@@ -168,6 +168,8 @@ class TheoricMaps():
     def plot_all_theoric_space(self,map):
         li = np.linspace(0,2*np.pi, 5)
         x = np.linspace(0,1,21)
+        if map == 'l':
+            x = np.linspace(0,2,21)
         for i in li:
             for k in li:
                 self.plot_theoric(x,map,theta=k,phi=i)
@@ -185,11 +187,11 @@ def main():
     #a.plot_all_theoric_space('bpf')
     #a.plot_all_theoric_space('d')
     #a.plot_all_theoric_space('adg')
-    #a.plot_all_theoric_space('l')
+    a.plot_all_theoric_space('l')
     #-----------------------------------------------------------------------------
     
     #--------- para plotar todos os dados salvos com os valores teóricos:---------
-    x = np.linspace(0,1,21)
+    x = np.linspace(0,2,21)
 
     #a.plot_storaged('ad')
     #a.plot_theoric(x,'ad',theta=pi/2,phi=0)
@@ -203,11 +205,11 @@ def main():
     #a.plot_storaged('bpf')
     #a.plot_theoric(x,'bpf',theta=pi/2,phi=0.0)
 
-    a.plot_storaged('d')
-    a.plot_theoric(x,'d',theta=pi/2,phi=0)
+    #a.plot_storaged('d')
+    #a.plot_theoric(x,'d',theta=pi/2,phi=0)
 
     #a.plot_storaged('l')
-    #a.plot_theoric(x,'l',theta=pi/2,phi=0)
+    a.plot_theoric(x,'l',theta=pi/2,phi=0)
     #a.plot_storaged('adg')
     #a.plot_theoric(x,'adg',theta=pi/2,phi=0)
     plt.legend(loc=1)
